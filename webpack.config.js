@@ -4,6 +4,11 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
+    'vendor': [
+      'angular',
+      'moment',
+      'moment-timezone'
+    ],
     'app': './src/app.js'
   },
   output: {
@@ -16,15 +21,27 @@ module.exports = {
       test: /\.scss$/,
       use: ExtractTextPlugin.extract({
         fallback: 'style-loader',
-        use: ['css-loader', 'sass-loader']
+        use: ['css-loader', 'postcss-loader', 'sass-loader']
       })
+    }, {
+      test: /\.json$/,
+      use: 'json-loader'
+    }, {
+      test: require.resolve('moment'),
+      use: [{
+        loader: 'expose-loader',
+        options: 'moment'
+      }]
     }]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin('style.css')
+    new ExtractTextPlugin('style.css'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "vendor",
+      minChunks: Infinity,
+    })
   ],
-  watch: true,
   devServer: {
     hot: true,
     inline: true,

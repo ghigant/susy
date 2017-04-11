@@ -1,3 +1,2 @@
 require('./styles/index.scss');
-
-console.log('susy demo');
+require('./modules/demo/_demo');
